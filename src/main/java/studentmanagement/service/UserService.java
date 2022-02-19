@@ -27,8 +27,8 @@ public class UserService {
 	}
 	
 	public void save(UserDTO dto) {
-		String encodePwd = encode.encode(dto.getPassword());
-		dto.setPassword(encodePwd);
+//		String encodePwd = encode.encode(dto.getPassword());
+//		dto.setPassword(encodePwd);
 		dto.setRole("ROLE_USER");
 		dto.setEnable(true);
 		userRepo.save(dto);

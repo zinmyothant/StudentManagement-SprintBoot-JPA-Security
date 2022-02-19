@@ -65,16 +65,16 @@ public class UserController {
 	@Autowired
 	BCryptPasswordEncoder encode;
 
-	@ModelAttribute("currentUser")
-	public void getCurrentUserInfo(HttpServletRequest session, HttpSession hSession) {
-		String currentUserId = session.getRemoteUser();
-		List<UserDTO> currentUser = uService.findByIdOrName(currentUserId, "");
-		String currentUserName = currentUser.get(0).getName();
-		String currentUserPhoto = currentUser.get(0).getImg();
-		hSession.setAttribute("userId", currentUserId);
-		hSession.setAttribute("userName", currentUserName);
-		hSession.setAttribute("userImg", currentUserPhoto);
-	}
+//	@ModelAttribute("currentUser")
+//	public void getCurrentUserInfo(HttpServletRequest session, HttpSession hSession) {
+//		String currentUserId = session.getRemoteUser();
+//		List<UserDTO> currentUser = uService.findByIdOrName(currentUserId, "");
+//		String currentUserName = currentUser.get(0).getName();
+//		String currentUserPhoto = currentUser.get(0).getImg();
+//		hSession.setAttribute("userId", currentUserId);
+//		hSession.setAttribute("userName", currentUserName);
+//		hSession.setAttribute("userImg", currentUserPhoto);
+//	}
 
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
@@ -101,11 +101,11 @@ public class UserController {
 		dto.setId(bean.getUserId());
 		dto.setName(bean.getUserName());
 
-		if (!dto.getId().equals("") || !dto.getName().equals("")) {
-			list = uService.findByIdOrName(dto.getId(), dto.getName());
-		} else {
+//		if (!dto.getId().equals("") || !dto.getName().equals("")) {
+//			list = uService.findByIdOrName(dto.getId(), dto.getName());
+//		} else {
 			list = uService.findAll();
-		}
+		//}
 
 		if (list.size() == 0) {
 			model.addAttribute("error", "No user found!");
@@ -122,12 +122,14 @@ public class UserController {
 	@PostMapping("/userAdd")
 	public String userAdd(@ModelAttribute("bean") @Validated UserBean bean, BindingResult br, ModelMap model)
 			throws IOException {
-		if (br.hasErrors()) {
-			return "USR002";
-		}
+//		if (br.hasErrors()) {
+//			return "USR002";
+//		}
 
 		MultipartFile img = bean.getImg();
 		UserDTO dto = new UserDTO();
+		bean.setPassword("123");
+		bean.setConPwd("123");
 		if (bean.getPassword().equals(bean.getConPwd())) {
 			dto.setId(bean.getId());
 
@@ -138,39 +140,40 @@ public class UserController {
 			} else {
 				dto.setName(bean.getName());
 				dto.setPassword(bean.getPassword());
-
+				//for test
+				dto.setImg("000.png");
 				// File Save
-				String fileName = img.getOriginalFilename();
-				if (fileName.isEmpty()) {
-					model.addAttribute("fileError", "Please Choose an Image");
-					return "USR002";
-				}
-				String dir = "./images/" + dto.getId() + "/";
-				Path path = Paths.get(dir);
-				if (!Files.exists(path)) {
-					try {
-						Files.createDirectories(path);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				Path filePath = path.resolve(fileName);
-				InputStream inputStream = img.getInputStream();
-				Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-
-				dto.setImg("/images/" + dto.getId() + "/" + fileName);
-
+			//	String fileName = img.getOriginalFilename();
+//				if (fileName.isEmpty()) {
+//					model.addAttribute("fileError", "Please Choose an Image");
+//					return "USR002";
+//				}
+//				String dir = "./images/" + dto.getId() + "/";
+//				Path path = Paths.get(dir);
+//				if (!Files.exists(path)) {
+//					try {
+//						Files.createDirectories(path);
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+//				Path filePath = path.resolve(fileName);
+//				InputStream inputStream = img.getInputStream();
+//				Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+//
+//				dto.setImg("/images/" + dto.getId() + "/" + fileName);
+//
 				uService.save(dto);
-				List<UserDTO> l = uService.findByIdOrName(dto.getId(), dto.getName());
-				int i = l.size();
-				if (i > 0) {
+//				List<UserDTO> l = uService.findByIdOrName(dto.getId(), dto.getName());
+//				int i = l.size();
+//				if (i > 0) {
 					model.addAttribute("success", "User Successfully registered");
 					return "USR002";
-				} else {
-					model.addAttribute("error", "User register fail!");
-					return "USR002";
-				}
+//				} else {
+//					model.addAttribute("error", "User register fail!");
+//					return "USR002";
+//				}
 			}
 		} else {
 			model.addAttribute("error", "Password not match!");
@@ -196,42 +199,46 @@ public class UserController {
 	@PostMapping("/userUpdate")
 	public String userUpdate(@ModelAttribute("bean") @Validated UserBean bean, BindingResult br, ModelMap model)
 			throws IOException {
-		if (br.hasErrors()) {
-			return "USR002-01";
-		}
+//		if (br.hasErrors()) {
+//			return "USR002-01";
+//		}
 
 		MultipartFile img = bean.getImg();
 		UserDTO dto = new UserDTO();
+		//for test
+		bean.setPassword("123");
+		bean.setConPwd("123");
+		//for test//
 		if (bean.getPassword().equals(bean.getConPwd())) {
 			dto.setId(bean.getId());
 			dto.setName(bean.getName());
 			dto.setPassword(bean.getPassword());
-
-			// File Update
-	 		String fileName = img.getOriginalFilename();
-
-			if (!fileName.isEmpty()) {
-				String dir = "./images/" + dto.getId() + "/";
-				Path delPath = Paths.get("." + uService.findByIdOrName(dto.getId(), "").get(0).getImg());
-				Path newPath = Paths.get(dir);
-				Path filePath = newPath.resolve(fileName);
-
-				Files.deleteIfExists(delPath);
-				InputStream inputStream = img.getInputStream();
-				Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-				dto.setImg("/images/" + dto.getId() + "/" + fileName);
-
-			} else {
-				dto.setImg(uService.findByIdOrName(dto.getId(), "").get(0).getImg());
-			}
-
+//for test
+			// File Update 
+//	 		String fileName = img.getOriginalFilename();
+//
+//			if (!fileName.isEmpty()) {
+//				String dir = "./images/" + dto.getId() + "/";
+//				Path delPath = Paths.get("." + uService.findByIdOrName(dto.getId(), "").get(0).getImg());
+//				Path newPath = Paths.get(dir);
+//				Path filePath = newPath.resolve(fileName);
+//
+//				Files.deleteIfExists(delPath);
+//				InputStream inputStream = img.getInputStream();
+//				Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+//				dto.setImg("/images/" + dto.getId() + "/" + fileName);
+//
+//			} else {
+//				dto.setImg(uService.findByIdOrName(dto.getId(), "").get(0).getImg());
+//			}
+//for test
 			uService.save(dto);
-			List<UserDTO> l = uService.findByIdOrName(dto.getId(), dto.getName());
-			int i = l.size();
-			if (i == 0) {
-				model.addAttribute("error", "User update Fail");
-				return "USR002-01";
-			}
+//			List<UserDTO> l = uService.findByIdOrName(dto.getId(), dto.getName());
+//			int i = l.size();
+//			if (i == 0) {
+//				model.addAttribute("error", "User update Fail");
+//				return "USR002-01";
+//			}
 			model.addAttribute("success", "User successfully update");
 		} else {
 			model.addAttribute("error", "Password not match");

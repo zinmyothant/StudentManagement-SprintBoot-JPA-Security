@@ -67,4 +67,17 @@ public class UserDTO {
 	public void setImg(String img) {
 		this.img = img;
 	}
+
+	public UserDTO(String id, String name, String password) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.password = password;
+	}
+
+	public UserDTO() {
+		super();
+	}
+
+	
 }

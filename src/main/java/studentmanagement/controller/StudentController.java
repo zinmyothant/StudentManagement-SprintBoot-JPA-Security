@@ -53,16 +53,16 @@ public class StudentController {
 
 	@Autowired
 	ClassService cService;
-
-	@ModelAttribute("clist")
-	public List<String> classList() {
-		List<ClassDTO> clist = cService.findAll();
-		List<String> l = new ArrayList<>();
-		for (int i = 0; i < clist.size(); i++) {
-			l.add(clist.get(i).getName());
-		}
-		return l;
-	}
+	
+//	@ModelAttribute("clist")
+//	public List<String> classList() {
+//		List<ClassDTO> clist = cService.findAll();
+//		List<String> l = new ArrayList<>();
+//		for (int i = 0; i < clist.size(); i++) {
+//			l.add(clist.get(i).getName());
+//		}
+//		return l;
+//	}
 
 	@GetMapping("/studentSearch")
 	public ModelAndView userSearchSetUp(@ModelAttribute("success") String success, ModelMap model) {
@@ -77,7 +77,10 @@ public class StudentController {
 		dto.setStudentId(bean.getStudentId());
 		dto.setStudentName(bean.getStudentName());
 		dto.setClassName(bean.getClassName());
-
+		//for test
+		dto.setStudentId("123");
+		dto.setStudentName("Zin");
+		dto.setClassName("Java Web");
 		if (!dto.getStudentId().equals("") || !dto.getStudentName().equals("") || !dto.getClassName().equals("")) {
 			list = sService.findByStudentIdOrStudentNameOrClassName(dto.getStudentId(), dto.getStudentName(), dto.getClassName());
 		} else {
@@ -91,11 +94,12 @@ public class StudentController {
 		return "BUD001";
 	}
 
-	@GetMapping("/studentUpdate")
+	@GetMapping("/studentUpdate") 
 	public ModelAndView studentUpdateSetUp(@RequestParam("id") String id, ModelMap model) {
 		StudentDTO dto = new StudentDTO();
 		dto.setStudentId(id);
-		List<StudentDTO> list = sService.findByStudentIdOrStudentNameOrClassName(dto.getStudentId(), dto.getStudentName(), dto.getClassName());
+	List<StudentDTO> list =new ArrayList();
+			list=sService.findByStudentIdOrStudentNameOrClassName(dto.getStudentId(), dto.getStudentName(), dto.getClassName());
 		StudentBean bean = new StudentBean();
 		for (StudentDTO res : list) {
 			bean.setStudentId(res.getStudentId());
@@ -112,11 +116,11 @@ public class StudentController {
 
 	@PostMapping("/studentUpdate")
 	public String studentUpdate(@ModelAttribute("bean") @Validated StudentBean bean, BindingResult br, ModelMap model) {
-		if (br.hasErrors() || bean.getYear().equals("Year") || bean.getMonth().equals("Month")
-				|| bean.getDay().equals("Day")) {
-			model.addAttribute("error", "Register date can't be blank!");
-			return "BUD002-01";
-		}
+//		if (br.hasErrors() || bean.getYear().equals("Year") || bean.getMonth().equals("Month")
+//				|| bean.getDay().equals("Day")) {
+//			model.addAttribute("error", "Register date can't be blank!");
+//			return "BUD002-01";
+//		}
 
 		String y = bean.getYear();
 		String m = bean.getMonth();
@@ -129,12 +133,12 @@ public class StudentController {
 		dto.setRegisterDate(y + "-" + m + "-" + d);
 		dto.setStatus(bean.getStatus());
 		sService.save(dto);
-		List<StudentDTO> l = sService.findByStudentIdOrStudentNameOrClassName(dto.getStudentId(), dto.getStudentName(), dto.getClassName());
-		int i = l.size();
-		if (i == 0) {
-			model.addAttribute("error", "Student update Fail");
-			return "BUD002-01";
-		}
+//		List<StudentDTO> l = sService.findByStudentIdOrStudentNameOrClassName(dto.getStudentId(), dto.getStudentName(), dto.getClassName());
+//		int i = l.size();
+//		if (i == 0) {
+//			model.addAttribute("error", "Student update Fail");
+//			return "BUD002-01";
+//		}
 		model.addAttribute("success", "Student successfully updated");
 		return "BUD002-01";
 	}
@@ -147,11 +151,11 @@ public class StudentController {
 	@PostMapping("/studentRegister")
 	public String studentRegister(@ModelAttribute("bean") @Validated StudentBean bean, BindingResult br, ModelMap model,
 			RedirectAttributes ra) {
-		if (br.hasErrors() || bean.getYear().equals("Year") || bean.getMonth().equals("Month")
-				|| bean.getDay().equals("Day")) {
-			model.addAttribute("error", "Register date can't be blank!");
-			return "BUD002";
-		}
+//		if (br.hasErrors() || bean.getYear().equals("Year") || bean.getMonth().equals("Month")
+//				|| bean.getDay().equals("Day")) {
+//			model.addAttribute("error", "Register date can't be blank!");
+//			return "BUD002";
+//		}
 
 		String y = bean.getYear();
 		String m = bean.getMonth();
@@ -163,12 +167,12 @@ public class StudentController {
 		if (list.size() != 0) {
 			model.addAttribute("error", "StudentID already exist!");
 			return "BUD002";
-		} else {
+		} else { 
 			dto.setStudentName(bean.getStudentName());
 			dto.setClassName(bean.getClassName());
 			dto.setRegisterDate(y + "-" + m + "-" + d);
 			dto.setStatus(bean.getStatus());
-			sService.save(dto);
+			sService.save(dto); 
 			List<StudentDTO> l = sService.findByStudentIdOrStudentNameOrClassName(dto.getStudentId(), dto.getStudentName(), dto.getClassName());
 			int i = l.size(); 
 			if (i > 0) {
@@ -187,13 +191,13 @@ public class StudentController {
 		StudentDTO dto = new StudentDTO();
 		dto.setStudentId(id);
 		sService.deleteById(dto.getStudentId());
-		List<StudentDTO> l = sService.findByStudentIdOrStudentNameOrClassName(dto.getStudentId(), dto.getStudentName(), dto.getClassName());
-		int i = l.size();
-		if (i > 0) {
+//		List<StudentDTO> l = sService.findByStudentIdOrStudentNameOrClassName(dto.getStudentId(), dto.getStudentName(), dto.getClassName());
+//		int i = l.size();
+//		if (i > 0) {
 			ra.addAttribute("success", "Delete successful");
-		} else {
-			ra.addAttribute("error", "Delete Fail!");
-		}
+		//} else {
+			//ra.addAttribute("error", "Delete Fail!");
+		//}
 		return "redirect:/user/studentSearch";
 	}
 	

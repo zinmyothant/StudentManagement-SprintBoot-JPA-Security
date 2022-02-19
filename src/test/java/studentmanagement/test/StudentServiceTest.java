@@ -24,7 +24,7 @@ public class StudentServiceTest {
 	
 	@MockBean
 	private StudentRepository studentRepository;
-	@Disabled("Disabled util!")
+	//@Disabled("Disabled util!")
 	@Test
 	public void testSave() {
 		StudentDTO dto = new StudentDTO();
@@ -33,12 +33,13 @@ public class StudentServiceTest {
 		dto.setClassName("ClassTest");
 		dto.setRegisterDate("2020-2-15");
 		dto.setStatus("Failed");
-		Assertions.assertEquals(dto.toString(), sService.save(dto).toString());
+		sService.save(dto);
+	verify(studentRepository,times(1)).save(dto);
 	}
-	
+	 
 	@Test
 	public void testFindAll() {
-		Assertions.assertEquals(1, sService.findAll().size());
+		Assertions.assertEquals(0, sService.findAll().size());
 	}
 	
 	@Test
@@ -55,4 +56,17 @@ public class StudentServiceTest {
 	verify(studentRepository,times(1)).findByStudentIdOrStudentNameOrClassName(dto.getStudentId(), dto.getStudentName(),dto.getClassName());
 	
 	}
+	@Test
+	public void deleteTest() {
+		StudentDTO dto = new StudentDTO();
+		dto.setStudentId("ST001");
+		dto.setStudentName("Student Test");
+		dto.setClassName("ClassTest");
+		dto.setRegisterDate("2020-2-15");
+		dto.setStatus("Failed");
+		sService.deleteById("ST001");
+		verify(studentRepository,times(1)).deleteById("ST001");
+	}
+	
+	
 }

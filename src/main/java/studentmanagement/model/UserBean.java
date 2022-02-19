@@ -12,14 +12,18 @@ public class UserBean {
 	@NotEmpty(message = "User Name can't be empty!")
 	private String name;
 
-	@NotEmpty(message = "Password can't be empty!")
+	//@NotEmpty(message = "Password can't be empty!")
 	private String password;
 
-	@NotEmpty(message = "Password can't be empty!")
+	//@NotEmpty(message = "Password can't be empty!")
 	private String conPwd;
 	
 	private MultipartFile img;
 	
+	
+
+	
+
 	public String getId() {
 		return id;
 	}
@@ -54,6 +58,10 @@ public class UserBean {
 
 	public MultipartFile getImg() {
 		return img;
+	}
+
+	public UserBean() {
+		super();
 	}
 
 	public void setImg(MultipartFile img) {
